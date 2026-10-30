@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -15,12 +16,32 @@ public class ControladorProcesadores {
             cpusDisponibles.add(j);
         }
     }
+   //EXCLUSIÓN MUTUA para reservar las cpus (se accede al recurso compartido de cpus disponibles)
+   public synchronized boolean reservarCPUs( int idMV, int cantidad){
+      if (cantidad > cpusDisponibles.size() ){
+         return false;
+      }
+      List<Integer> procesadoresAsignados = new ArrayList<Integer>();
+      for (Integer cpu :cpusDisponibles){
+         procesadoresAsignados.add(cpu);
+         if (procesadoresAsignados.size()== cantidad) {
+            break;
+         }
+      }
 
-   public boolean reservarCPUs( int idMV, int cantidad){
-      return false;
+      cpusDisponibles.removeAll(procesadoresAsignados);
+      asignaciones.put(idMV,procesadoresAsignados);
+      return true;
+         
+
 
    }
-   public void liberarCPUs(int idMV){
+   // EXCLUSIÓN MUTUA para liberar las cpus(tambien se accede al recurso compartido de cpus disponibles)
+   public synchronized void liberarCPUs(int idMV){
+       List<Integer> procesadoresDevueltos = asignaciones.remove(idMV);
+        if (procesadoresDevueltos.size() != 0) {
+            cpusDisponibles.addAll(procesadoresDevueltos);
+        }
       
    }
 
