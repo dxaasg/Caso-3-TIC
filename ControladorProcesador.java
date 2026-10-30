@@ -1,4 +1,4 @@
-private class ControladorProcesador {
-    Map<idMV, List<idCpus>> asignacion;
-    Set<Integer> cpusDisp;
+public class ControladorProcesador {
+   private Map<idMV, List<idCpus>> asignacion;
+   private Set<Integer> cpusDisp;
 }
