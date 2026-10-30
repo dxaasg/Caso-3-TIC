@@ -9,4 +9,8 @@ public class ControladorMemoria {
     private int tamPag;
     private Map<Integer, List<Integer>> asignaciones;
     private Set<Integer> pagDisp;
+    public void reservarMemoria(int id, int cantMemoria) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'reservarMemoria'");
+    }
 }

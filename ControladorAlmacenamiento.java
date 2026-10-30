@@ -10,5 +10,9 @@ public class ControladorAlmacenamiento {
     private int tamMiB;
     private Map <Integer, List<Integer>> asignacion;
     private Set<Integer> bloqDisponibles;
+    public void reservarDisco(int id, int cantAlmacenamiento) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'reservarDisco'");
+    }
 
 }

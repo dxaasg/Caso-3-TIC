@@ -8,4 +8,14 @@ public class ControladorProcesadores {
    }
    private Map<Integer, List<Integer>> asignacion;
    private Set<Integer> cpusDisp;
+
+   public boolean reservarCPUs( int idMV, int cantidad){
+      return false;
+
+   }
+   public void liberarCPUs(int idMV){
+      
+   }
+
+
 }
