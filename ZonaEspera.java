@@ -1,13 +1,16 @@
 public class ZonaEspera{
 
-    public void esperarDisponibilidad() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'esperarDisponibilidad'");
+    public synchronized void esperarDisponibilidad() {
+        try {
+            wait();
+        } catch (Exception e) {
+           Thread.currentThread().interrupt();
+           System.out.println("Una MV fue interrumpida mientras esperaba en la Zona de Espera");
+        }
     }
 
     public void notificarLiberacion() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'notificarLiberacion'");
+        notifyAll();
     }
     
 }

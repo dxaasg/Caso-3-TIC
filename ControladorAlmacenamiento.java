@@ -23,13 +23,14 @@ public class ControladorAlmacenamiento {
     }
     //Exclusion mutua para poder acceder a los bloques disponibles y al mapa de asignaciones
     public synchronized boolean reservarDisco(int idMV, double cantAlmacenamiento) {
-        if (traducirGiBABloques(cantAlmacenamiento).size() > bloquesDisponibles.size()){
+        int bloquesNecesarios = traducirGiBABloques(cantAlmacenamiento);
+        if (traducirGiBABloques(cantAlmacenamiento) > bloquesDisponibles.size()){
             return false;
         }
         ArrayList<Integer> bloquesreservados = new ArrayList<>();
         for (Integer bloque: bloquesDisponibles){
             bloquesreservados.add( bloque);
-            if (bloquesreservados.size()== cantAlmacenamiento){
+            if (bloquesreservados.size()== bloquesNecesarios){
                 break;
             }
         }
@@ -41,7 +42,7 @@ public class ControladorAlmacenamiento {
     //Exclusion mutua para acceder a las asignaciones y a bloques disponibles
     public synchronized void liberarDisco(int idMV) {
         List<Integer> bloquesRemovidos = asignaciones.remove(idMV);
-        if (bloquesRemovidos.size() != 0){
+        if (bloquesRemovidos != null && !bloquesRemovidos.isEmpty()){
             bloquesDisponibles.addAll(bloquesRemovidos);
             
         }
@@ -49,9 +50,9 @@ public class ControladorAlmacenamiento {
 
     }
 
-    private Set<Integer> traducirGiBABloques(double cantAlmacenamiento) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'traducirGiBABloques'");
+    private int traducirGiBABloques(double cantAlmacenamiento) {
+        double mibTotales = cantAlmacenamiento *1024.0;
+        return (int) Math.round(mibTotales/tamañoBloqueMiB);
     }
 }
     

@@ -52,7 +52,7 @@ public class ControladorMemoria {
     // Método synchronized para liberar los recursos de MV
     public synchronized void liberarMemoria(int idMV) {
         List<Integer> paginasDevueltas = asignaciones.remove(idMV);
-        if (paginasDevueltas.size() != 0) {
+        if (paginasDevueltas != null && !paginasDevueltas.isEmpty()) {
             pagDisp.addAll(paginasDevueltas);
         }
     }       

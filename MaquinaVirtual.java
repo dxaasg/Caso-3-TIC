@@ -48,7 +48,8 @@ public class MaquinaVirtual extends Thread{
 
         try {
             System.out.println("MV " + id + " iniciando ejecución...");
-            Thread.sleep((long) (Math.random() * 2000 + 1000)); 
+            // Tiempo aleatorio entre 4000 y 40000 ms
+            Thread.sleep((long) (Math.random() * 36000 + 4000)); 
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -58,7 +59,7 @@ public class MaquinaVirtual extends Thread{
         ctrlMemo.liberarMemoria(id);
         ctrlProcesador.liberarCPUs(id);
 
-        esperar.notificarLiberacion(); //acá toca notificar a todas las mv. 
+        esperar.notificarLiberacion(); 
     }
 
     
