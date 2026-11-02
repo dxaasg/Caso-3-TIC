@@ -62,7 +62,6 @@ public class MaquinaVirtual extends Thread{
         esperar.notificarLiberacion(); 
     }
 
-    
 }
 
 
