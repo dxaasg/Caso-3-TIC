@@ -6,16 +6,17 @@ import java.util.Map;
 import java.util.Set;
 
 public class ControladorAlmacenamiento {
-    private int tamañoBloqueMiB;
+    private int tamañoBloqueKiB;
     private Map<Integer, List<Integer>> asignaciones;
     private Set<Integer> bloquesDisponibles;
 
-    public ControladorAlmacenamiento(double capacidadTotalGiB, int tamanoBloqueMiB) {
-        this.tamañoBloqueMiB = tamanoBloqueMiB;
+    public ControladorAlmacenamiento(double capacidadTotalGiB, int tamanoBloqueKiB) {
+        this.tamañoBloqueKiB = tamanoBloqueKiB;
         this.asignaciones = new HashMap<>();
         this.bloquesDisponibles = new HashSet<>();
         
-        int totalBloques = (int) Math.round((capacidadTotalGiB * 1024.0) / tamanoBloqueMiB);
+        double capacidadTotalKiB = capacidadTotalGiB * 1048576.0;
+        int totalBloques = (int) Math.round(capacidadTotalKiB / tamanoBloqueKiB);
         
         for (int j = 0; j < totalBloques; j++) {
             bloquesDisponibles.add(j);
@@ -24,11 +25,11 @@ public class ControladorAlmacenamiento {
     //Exclusion mutua para poder acceder a los bloques disponibles y al mapa de asignaciones
     public synchronized boolean reservarDisco(int idMV, double cantAlmacenamiento) {
         int bloquesNecesarios = traducirGiBABloques(cantAlmacenamiento);
-        if (traducirGiBABloques(cantAlmacenamiento) > bloquesDisponibles.size()){
+        if (bloquesNecesarios > bloquesDisponibles.size()){
             return false;
         }
         ArrayList<Integer> bloquesreservados = new ArrayList<>();
-        for (Integer bloque: bloquesDisponibles){
+          for (Integer bloque: bloquesDisponibles){
             bloquesreservados.add( bloque);
             if (bloquesreservados.size()== bloquesNecesarios){
                 break;
@@ -51,8 +52,8 @@ public class ControladorAlmacenamiento {
     }
 
     private int traducirGiBABloques(double cantAlmacenamiento) {
-        double mibTotales = cantAlmacenamiento *1024.0;
-        return (int) Math.round(mibTotales/tamañoBloqueMiB);
+        double kibTotales = cantAlmacenamiento *1048576.0;
+        return (int) Math.round(kibTotales/tamañoBloqueKiB);
     }
 }
     

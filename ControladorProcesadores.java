@@ -39,7 +39,7 @@ public class ControladorProcesadores {
    // EXCLUSIÓN MUTUA para liberar las cpus(tambien se accede al recurso compartido de cpus disponibles)
    public synchronized void liberarCPUs(int idMV){
        List<Integer> procesadoresDevueltos = asignaciones.remove(idMV);
-        if (procesadoresDevueltos != null && procesadoresDevueltos.isEmpty()) {
+        if (procesadoresDevueltos != null && !procesadoresDevueltos.isEmpty()) {
             cpusDisponibles.addAll(procesadoresDevueltos);
         }
       

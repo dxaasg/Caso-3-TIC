@@ -6,25 +6,26 @@ import java.util.Map;
 import java.util.Set;
 
 public class ControladorMemoria {
-    private int tamPag;
+    private int tamPag; //KiB
     private Map<Integer, List<Integer>> asignaciones;
     private Set<Integer> pagDisp;
 
     public ControladorMemoria(double capacidadTotalGiB, int tamPag) {
-        this.tamPag = tamPag;
+        this.tamPag = tamPag; 
         this.asignaciones = new HashMap<>();
         this.pagDisp = new HashSet<>();
 
         // Calcular el número total de páginas iniciales
-        int totalPaginas = (int) Math.round((capacidadTotalGiB * 1024.0) / tamPag);
+        double capacidadTotalKiB = capacidadTotalGiB * 1048576.0;
+        int totalPaginas = (int) Math.round(capacidadTotalKiB/ tamPag);
         for (int i = 0; i < totalPaginas; i++) {
             pagDisp.add(i);
         }
     }
 
     public int traducirGiBAPaginas(double gib) {
-        double mibTotales = gib * 1024.0;
-        return (int) Math.round(mibTotales / tamPag);
+        double kibTotales = gib * 1048576.0;
+        return (int) Math.round(kibTotales / tamPag);
     }
     
 
