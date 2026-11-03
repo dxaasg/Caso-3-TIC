@@ -1,32 +1,46 @@
 import java.util.Random;
 
-public class Usuario implements Runnable{
+public class Usuario implements Runnable {
     private int id;
     private int solicitudesAGenerar;
     private BuzonEntrada buzon; 
-
-    public Usuario(int id, int solicitudesAGenerar, BuzonEntrada buzon) {
-        this.id = id;
-        this.solicitudesAGenerar = solicitudesAGenerar;
-        this.buzon = buzon;
-    }
-
     private int capMaxProc;
     private double maxMemoria;
     private double maxAlmacenamiento;
 
+    public Usuario(int id, int solicitudesAGenerar, BuzonEntrada buzon, int capMaxProc, double maxMemoria, double maxAlmacenamiento) {
+        this.id = id;
+        this.solicitudesAGenerar = solicitudesAGenerar;
+        this.buzon = buzon;
+        this.capMaxProc = capMaxProc;
+        this.maxMemoria = maxMemoria;
+        this.maxAlmacenamiento = maxAlmacenamiento;
+    }
+
     @Override
     public void run() {
-         for (int i = 1; i <= solicitudesAGenerar; i++){
-            escribirYenviarSol();
+
+        while(buzon.getcapacidadMaxima() == 0){ //este while deberia ser synchronized?
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        for (int i = 1; i <= solicitudesAGenerar; i++){
+            escribirYenviarSol(i);
          }
          buzon.Termine();
     }
 
-    public void escribirYenviarSol(){
+    public void escribirYenviarSol(int secuencial) {
 
         Random random = new Random();
         
+        // Generar ID único de la solicitud
+        String idSolicitud = id + "-" + secuencial;
+
         //Generar los datos seudoaleatoriamente necesarios para la solicitud
         int topeProc = (int) Math.round(capMaxProc * 0.75);
         int numProcesadores = random.nextInt(topeProc) + 1;
@@ -40,7 +54,7 @@ public class Usuario implements Runnable{
         double almacenamientoGiB = multDosInferior(almGenerado);
 
 
-        Solicitud solicitud = new Solicitud(numProcesadores, memoriaGiB, almacenamientoGiB);
+        Solicitud solicitud = new Solicitud(idSolicitud, numProcesadores, memoriaGiB, almacenamientoGiB);
 
         buzon.enviar(solicitud);
     }

@@ -20,43 +20,32 @@ public class GestorSolicitudes implements Runnable {
     public void run(){
         while(buzon.getUsuariosActivos() > 0 || !buzon.getColaSolicitudes().isEmpty()){
 
-            if(zonaEspera.getCantMvEnEspera() < zonaEspera.getUmbral()){
-                while(buzon.getColaSolicitudes().isEmpty()){
+            if(zonaEspera.getCantMvEnEspera() >= zonaEspera.getUmbral()){
+                buzon.bloquearPorGestor();
+                while(zonaEspera.getCantMvEnEspera() >= zonaEspera.getUmbral()){
                     Thread.yield();
                 }
-
-                for(int i = 0; i < buzon.getColaSolicitudes().size(); i++){
-                    Solicitud solicitud = buzon.getColaSolicitudes().remove(0); 
-                    procesarSol(solicitud);
-                }
+                buzon.desbloquearPorGestor();
 
             }
+            
             else{
-                procesarTodasSolicitudes();
+                
+                while(buzon.getColaSolicitudes().isEmpty()){
+                Thread.yield();
+                }
+                Solicitud solicitud = buzon.retirarSolicitud();
+                crearMV(solicitud);
             }
 
             termine();
         }
     }
 
-    public synchronized void procesarSol(Solicitud solicitud){ { 
-            crearMV(solicitud);
-        }
-    }
-
-    public synchronized void procesarTodasSolicitudes(){
-        buzon.bloquearPorGestor();
-        System.out.println("Gestor " + idGestor + ": Umbral alcanzado. Buzón bloqueado.");
-
-        while(!buzon.getColaSolicitudes().isEmpty()){
-            Solicitud solicitud = buzon.getColaSolicitudes().remove(0);
-            procesarSol(solicitud); //si el gestor debe de esperar hasta que se procesen todas las solicitudes, entonces quien procesa todas las solicitudes?
-        }
-    }
-
     public synchronized void crearMV(Solicitud solicitud){
         MaquinaVirtual mv = new MaquinaVirtual(idGestor, solicitud.getNumProcesadores(), solicitud.getMemoriaGiB(),
                 solicitud.getAlmacenamientoGiB(), ctrlProc, ctrlMem, ctrlAlm, zonaEspera);
+                
         Thread hiloMV = new Thread(mv); //preguntar si esto esta bien o va en el main
         hiloMV.start();
     }

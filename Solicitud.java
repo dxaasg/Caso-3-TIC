@@ -2,18 +2,17 @@ public class Solicitud {
     private int numProcesadores; 
     private double memoriaGiB;
     private double almacenamientoGiB;
-    private int id;
-    private static int idSolicitud = 0;
+    private String id;
 
-    public Solicitud(int numProcesadores, double memoriaGiB, double almacenamientoGiB) {
+    public Solicitud(String id, int numProcesadores, double memoriaGiB, double almacenamientoGiB) {
+        this.id = id;
         this.numProcesadores = numProcesadores;
         this.memoriaGiB = memoriaGiB;
         this.almacenamientoGiB = almacenamientoGiB;
-        this.id = obtenerSiguienteId();
     }
 
-    private static synchronized int obtenerSiguienteId() {
-        return ++idSolicitud;
+    public String getId() {
+        return id;
     }
 
     public int getNumProcesadores() {

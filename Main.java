@@ -46,7 +46,7 @@ public class Main {
         for (int i = 0; i < numUsuarios; i++) {
             int solicitudesAGenerar = baseEventos* i; 
             
-            Usuario usuario = new Usuario(i + 1, solicitudesAGenerar, buzon);
+            Usuario usuario = new Usuario(capacidadBuzon, solicitudesAGenerar, buzon, solicitudesAGenerar, capacidadMemoriaGiB, capacidadAlmacenamientoGiB);
             new Thread(usuario, "Hilo-Usuario-" + (i + 1)).start();
         }
 

@@ -31,6 +31,23 @@ public class BuzonEntrada {
         notifyAll();
     }
 
+    public synchronized Solicitud retirarSolicitud() {
+        while (colaSolicitudes.isEmpty()) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        Solicitud solicitud = colaSolicitudes.remove(0);
+        if (colaSolicitudes.isEmpty()) {
+            noVacio = false;
+        }
+        notifyAll();
+        return solicitud;
+    }
+
     public synchronized void Termine() {
         usuariosActivos--; 
         notifyAll();       
@@ -45,15 +62,15 @@ public class BuzonEntrada {
         notifyAll();
     }
 
-    public int getUsuariosActivos() {
+    public synchronized int getUsuariosActivos() {
         return usuariosActivos;
     }
 
-    public List<Solicitud> getColaSolicitudes() {
+    public synchronized List<Solicitud> getColaSolicitudes() {
         return colaSolicitudes;
     }
 
-    public int getcapacidadMaxima() {
+    public synchronized int getcapacidadMaxima() {
         return capacidadMaxima;
     }
 
