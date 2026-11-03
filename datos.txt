@@ -1,0 +1,10 @@
+nu=5
+base=10
+ng=3
+tam1=20
+tam2=15
+procesadores=16
+memoria_gib=32.0
+pagina_kib=4
+almacenamiento_gib=500.0
+bloque_kib=512

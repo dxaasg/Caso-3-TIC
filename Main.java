@@ -1,36 +1,55 @@
-public class Main extends Thread {
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Properties;
+
+public class Main {
     public static void main(String[] args) {
         System.out.println("=== Iniciando Sistema Gestor de Recursos para MVs ===");
 
-        // 1. Instanciar los Monitores (Objetos Compartidos)
-        int totalProcesadores = 0;
-        int capacidadTotalGiBMemoria = 0;
-        int tamPagKiB =0 ;
-        int capacidadTotalGiBAlmacenamiento = 0;
-        int tamañoBloqueKiB = 0;
-        int umbral = 0;
-
-
-        ControladorProcesadores ctrlProc = new ControladorProcesadores(totalProcesadores); // CPUs totales
-        ControladorMemoria ctrlMem = new ControladorMemoria(capacidadTotalGiBMemoria, tamPagKiB);   // GiB total,  tamañoPagKiB
-        ControladorAlmacenamiento ctrlAlm = new ControladorAlmacenamiento(capacidadTotalGiBAlmacenamiento, tamañoBloqueKiB); // GiB total, tamañoBloqueKiB
-        ZonaEspera zonaEspera = new ZonaEspera(umbral); // x MVs en espera
-
-        int capacidadBuzon = 0; // Tamaño buzón de entrada
-        int totalUsuarios = 0; // Número total de usuarios
-
-        BuzonEntrada buzon = new BuzonEntrada(capacidadBuzon, totalUsuarios);
-        // 2. Crear y arrancar los hilos de los Gestores de Solicitudes
-
-        GestorSolicitudes gestor = new GestorSolicitudes(1, buzon, ctrlProc, ctrlMem, ctrlAlm, zonaEspera);
-        new Thread(gestor).start();
-        // 3. Crear y arrancar los hilos de los Usuarios
-        for (int i = 0; i < numUsuarios; i++){
-            Buzon buzon = this.buzon;
-            int solicitudesAGenerar = 0; //TODO
-            Usuario usuario = new Usuario(i, solicitudesAGenerar,buzon);
+        Properties config = new Properties();
+        try (FileReader reader = new FileReader("datos.txt")) {
+            config.load(reader);
+        } catch (IOException e) {
+            System.err.println("Error al leer el archivo datos.txt: " + e.getMessage());
+            return; 
         }
-        // 4. (Opcional) Esperar a que todos los Usuarios terminen de enviar solicitudes ???
-        System.out.println(">>> Todos los usuarios han terminado de generar sus solicitudes.");
+
+        int numUsuarios = Integer.parseInt(config.getProperty("nu"));
+        int baseEventos = Integer.parseInt(config.getProperty("base"));
+        int numGestores = Integer.parseInt(config.getProperty("ng"));
+        
+        int capacidadBuzon = Integer.parseInt(config.getProperty("tam1"));
+        int umbralEspera = Integer.parseInt(config.getProperty("tam2"));
+        
+        int totalProcesadores = Integer.parseInt(config.getProperty("procesadores"));
+        double capacidadMemoriaGiB = Double.parseDouble(config.getProperty("memoria_gib"));
+        int tamPagKiB = Integer.parseInt(config.getProperty("pagina_kib"));
+        
+        double capacidadAlmacenamientoGiB = Double.parseDouble(config.getProperty("almacenamiento_gib"));
+        int tamBloqueKiB = Integer.parseInt(config.getProperty("bloque_kib"));
+
+        System.out.println("Configuración cargada exitosamente. Instanciando monitores...");
+
+        ControladorProcesadores ctrlProc = new ControladorProcesadores(totalProcesadores);
+        ControladorMemoria ctrlMem = new ControladorMemoria(capacidadMemoriaGiB, tamPagKiB);
+        ControladorAlmacenamiento ctrlAlm = new ControladorAlmacenamiento(capacidadAlmacenamientoGiB, tamBloqueKiB);
+        ZonaEspera zonaEspera = new ZonaEspera(umbralEspera);
+        BuzonEntrada buzon = new BuzonEntrada(capacidadBuzon, numUsuarios);
+
+        // 4. Crear y arrancar los hilos de los Gestores de Solicitudes
+        for (int i = 0; i < numGestores; i++) {
+            GestorSolicitudes gestor = new GestorSolicitudes(i + 1, buzon, ctrlProc, ctrlMem, ctrlAlm, zonaEspera);
+            new Thread(gestor, "Hilo-Gestor-" + (i + 1)).start();
+        }
+
+        // 5. Crear y arrancar los hilos de los Usuarios
+        for (int i = 0; i < numUsuarios; i++) {
+            int solicitudesAGenerar = baseEventos* i; 
+            
+            Usuario usuario = new Usuario(i + 1, solicitudesAGenerar, buzon);
+            new Thread(usuario, "Hilo-Usuario-" + (i + 1)).start();
+        }
+
+        System.out.println(">>> Todos los hilos han sido lanzados.");
     }
 }
