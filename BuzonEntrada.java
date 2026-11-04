@@ -31,26 +31,22 @@ public class BuzonEntrada {
         notifyAll();
     }
 
-    public synchronized Solicitud retirarSolicitud() {
-        while (colaSolicitudes.isEmpty()) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
-
-        Solicitud solicitud = colaSolicitudes.remove(0);
+     public synchronized Solicitud retirarSolicitud() {
         if (colaSolicitudes.isEmpty()) {
-            noVacio = false;
+            return null;
         }
-        notifyAll();
-        return solicitud;
+        Solicitud s = colaSolicitudes.remove(0);
+        notifyAll(); // hay un espacio libre: despierta usuarios
+        return s;
     }
-
+    
     public synchronized void Termine() {
         usuariosActivos--; 
         notifyAll();       
+    }
+
+    public synchronized boolean terminado() {
+        return usuariosActivos == 0 && colaSolicitudes.isEmpty();
     }
 
     public synchronized void bloquearPorGestor(){

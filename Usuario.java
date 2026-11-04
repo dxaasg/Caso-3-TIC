@@ -31,6 +31,8 @@ public class Usuario implements Runnable {
         for (int i = 1; i <= solicitudesAGenerar; i++){
             escribirYenviarSol(i);
          }
+
+         System.out.println("Usuario " + id + ": generó todas las solicitudes (" + solicitudesAGenerar + ").");
          buzon.Termine();
     }
 

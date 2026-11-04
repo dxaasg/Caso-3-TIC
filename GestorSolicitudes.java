@@ -17,30 +17,30 @@ public class GestorSolicitudes implements Runnable {
         this.zonaEspera = zonaEspera2;
     }
 
-    public void run(){
-        while(buzon.getUsuariosActivos() > 0 || !buzon.getColaSolicitudes().isEmpty()){
+    public void run() {
+        while (!buzon.terminado()) {
 
-            if(zonaEspera.getCantMvEnEspera() >= zonaEspera.getUmbral()){
+            if (zonaEspera.getCantMvEnEspera() >= zonaEspera.getUmbral()) {
+               
                 buzon.bloquearPorGestor();
-                while(zonaEspera.getCantMvEnEspera() >= zonaEspera.getUmbral()){
+                while (zonaEspera.getCantMvEnEspera() > 0) {
                     Thread.yield();
                 }
                 buzon.desbloquearPorGestor();
 
-            }
-            
-            else{
-                
-                while(buzon.getColaSolicitudes().isEmpty()){
-                Thread.yield();
-                }
+            } else {
                 Solicitud solicitud = buzon.retirarSolicitud();
-                crearMV(solicitud);
+                if (solicitud == null) {
+                    Thread.yield(); 
+                } else {
+                    crearMV(solicitud);
+                }
             }
-
-            termine();
         }
+
+        System.out.println("Gestor " + idGestor + ": No hay más solicitudes. Terminando.");
     }
+
 
     public synchronized void crearMV(Solicitud solicitud){
         MaquinaVirtual mv = new MaquinaVirtual(solicitud.getId(), solicitud.getNumProcesadores(), solicitud.getMemoriaGiB(),

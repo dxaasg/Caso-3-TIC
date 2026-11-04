@@ -1,8 +1,8 @@
-nu=5
-base=10
-ng=3
-tam1=20
-tam2=15
+nu=3
+base=2
+ng=2
+tam1=4
+tam2=3
 procesadores=16
 memoria_gib=32.0
 pagina_kib=4
