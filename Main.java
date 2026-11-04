@@ -43,11 +43,11 @@ public class Main {
         }
 
         // 5. Crear y arrancar los hilos de los Usuarios
-        for (int i = 0; i < numUsuarios; i++) {
-            int solicitudesAGenerar = baseEventos* i; 
-            
-            Usuario usuario = new Usuario(i+1,  solicitudesAGenerar,  buzon,  totalProcesadores,  capacidadMemoriaGiB, capacidadAlmacenamientoGiB);
-            new Thread(usuario, "Hilo-Usuario-" + (i + 1)).start();
+        for (int i = 1; i <= numUsuarios; i++) {
+            int solicitudesAGenerar = baseEventos * i;
+            Usuario usuario = new Usuario(i, solicitudesAGenerar, buzon,
+                    totalProcesadores, capacidadMemoriaGiB, capacidadAlmacenamientoGiB);
+            new Thread(usuario, "Hilo-Usuario-" + i).start();
         }
 
         System.out.println(">>> Todos los hilos han sido lanzados.");

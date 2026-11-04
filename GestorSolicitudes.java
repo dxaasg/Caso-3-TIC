@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class GestorSolicitudes implements Runnable {
 
     private int idGestor;
@@ -6,6 +9,7 @@ public class GestorSolicitudes implements Runnable {
     private  ControladorMemoria ctrlMem;
     private  ControladorAlmacenamiento ctrlAlm;
     private  ZonaEspera zonaEspera;
+    private final List<Thread> hilosMV = new ArrayList<>();
 
     public GestorSolicitudes(int id, BuzonEntrada buzon2, ControladorProcesadores ctrlProc2, ControladorMemoria ctrlMem2,
             ControladorAlmacenamiento ctrlAlm2, ZonaEspera zonaEspera2) {
@@ -19,26 +23,30 @@ public class GestorSolicitudes implements Runnable {
 
     public void run() {
         while (!buzon.terminado()) {
-
             if (zonaEspera.getCantMvEnEspera() >= zonaEspera.getUmbral()) {
-               
                 buzon.bloquearPorGestor();
                 while (zonaEspera.getCantMvEnEspera() > 0) {
                     Thread.yield();
                 }
                 buzon.desbloquearPorGestor();
-
             } else {
-                Solicitud solicitud = buzon.retirarSolicitud();
-                if (solicitud == null) {
-                    Thread.yield(); 
+                Solicitud s = buzon.retirarSolicitud();
+                if (s == null) {
+                    Thread.yield();
                 } else {
-                    crearMV(solicitud);
+                    crearMV(s);
                 }
             }
         }
 
-        System.out.println("Gestor " + idGestor + ": No hay más solicitudes. Terminando.");
+        for (Thread t : hilosMV) {
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+        System.out.println("Gestor " + idGestor + ": terminó, no hay más solicitudes.");
     }
 
 
@@ -47,6 +55,7 @@ public class GestorSolicitudes implements Runnable {
                 solicitud.getAlmacenamientoGiB(), ctrlProc, ctrlMem, ctrlAlm, zonaEspera);
                 
         Thread hiloMV = new Thread(mv); //preguntar si esto esta bien o va en el main
+        hilosMV.add(hiloMV);
         hiloMV.start();
     }
 

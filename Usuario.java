@@ -74,12 +74,9 @@ public class Usuario implements Runnable {
         return potencia;
     }
 
-    public double multDosInferior(double almacenamiento){
-        if(almacenamiento < 1){
-            return 1;
-        }
-
-        return Math.floor(almacenamiento / 2.0) * 2.0; //se usa math.floor por que este siempre redondea hacia abajo, no como el round normal
+    public double multDosInferior(double almacenamiento) {
+        double r = Math.floor(almacenamiento / 2.0) * 2.0;
+        return Math.max(2.0, r);
     }
 
 }
