@@ -1,5 +1,5 @@
 public class MaquinaVirtual extends Thread{
-    private int id;
+    private String id;
     private int cantProcesadores;
     private double cantMemoria;
     private double cantAlmacenamiento;
@@ -8,7 +8,7 @@ public class MaquinaVirtual extends Thread{
     private ControladorMemoria ctrlMemo;
     private ZonaEspera esperar;
 
-    public MaquinaVirtual(int id, int cantProcesadores, double cantMemoria, double cantAlmacenamiento,
+    public MaquinaVirtual(String id, int cantProcesadores, double cantMemoria, double cantAlmacenamiento,
                           ControladorProcesadores ctrlProcesador, ControladorMemoria ctrlMemo,
                           ControladorAlmacenamiento ctrlAlmacen, ZonaEspera esperar) {
         this.id = id;

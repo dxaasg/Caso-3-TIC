@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class ControladorProcesadores {
-   private Map<Integer, List<Integer>> asignaciones;
+   private Map<String, List<Integer>> asignaciones;
    private Set<Integer> cpusDisponibles;
    public ControladorProcesadores(int totalProcesadores) {
         this.asignaciones = new HashMap<>();
@@ -17,7 +17,7 @@ public class ControladorProcesadores {
         }
     }
    //EXCLUSIÓN MUTUA para reservar las cpus (se accede al recurso compartido de cpus disponibles)
-   public synchronized boolean reservarCPUs( int idMV, int cantidad){
+   public synchronized boolean reservarCPUs( String id, int cantidad){
       if (cantidad > cpusDisponibles.size() ){
          return false;
       }
@@ -30,15 +30,15 @@ public class ControladorProcesadores {
       }
 
       cpusDisponibles.removeAll(procesadoresAsignados);
-      asignaciones.put(idMV,procesadoresAsignados);
+      asignaciones.put(id,procesadoresAsignados);
       return true;
          
 
 
    }
    // EXCLUSIÓN MUTUA para liberar las cpus(tambien se accede al recurso compartido de cpus disponibles)
-   public synchronized void liberarCPUs(int idMV){
-       List<Integer> procesadoresDevueltos = asignaciones.remove(idMV);
+   public synchronized void liberarCPUs(String id){
+       List<Integer> procesadoresDevueltos = asignaciones.remove(id);
         if (procesadoresDevueltos != null && !procesadoresDevueltos.isEmpty()) {
             cpusDisponibles.addAll(procesadoresDevueltos);
         }

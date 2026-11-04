@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class ControladorMemoria {
     private int tamPag; //KiB
-    private Map<Integer, List<Integer>> asignaciones;
+    private Map<String, List<Integer>> asignaciones;
     private Set<Integer> pagDisp;
 
     public ControladorMemoria(double capacidadTotalGiB, int tamPag) {
@@ -31,7 +31,7 @@ public class ControladorMemoria {
 
 
     // Método synchronized para aplicar exclusión mutua
-    public synchronized boolean reservarMemoria(int idMV, double gib) {
+    public synchronized boolean reservarMemoria(String id, double gib) {
         int paginasNecesarias = traducirGiBAPaginas(gib);
 
         if (pagDisp.size() < paginasNecesarias) {
@@ -46,13 +46,13 @@ public class ControladorMemoria {
             }
         }
         pagDisp.removeAll(paginasAsignadas);
-        asignaciones.put(idMV, paginasAsignadas);
+        asignaciones.put(id, paginasAsignadas);
         return true;
     }
 
     // Método synchronized para liberar los recursos de MV
-    public synchronized void liberarMemoria(int idMV) {
-        List<Integer> paginasDevueltas = asignaciones.remove(idMV);
+    public synchronized void liberarMemoria(String id) {
+        List<Integer> paginasDevueltas = asignaciones.remove(id);
         if (paginasDevueltas != null && !paginasDevueltas.isEmpty()) {
             pagDisp.addAll(paginasDevueltas);
         }

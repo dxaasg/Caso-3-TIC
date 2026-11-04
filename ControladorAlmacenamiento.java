@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class ControladorAlmacenamiento {
     private int tamañoBloqueKiB;
-    private Map<Integer, List<Integer>> asignaciones;
+    private Map<String, List<Integer>> asignaciones;
     private Set<Integer> bloquesDisponibles;
 
     public ControladorAlmacenamiento(double capacidadTotalGiB, int tamanoBloqueKiB) {
@@ -23,7 +23,7 @@ public class ControladorAlmacenamiento {
         }
     }
     //Exclusion mutua para poder acceder a los bloques disponibles y al mapa de asignaciones
-    public synchronized boolean reservarDisco(int idMV, double cantAlmacenamiento) {
+    public synchronized boolean reservarDisco(String id, double cantAlmacenamiento) {
         int bloquesNecesarios = traducirGiBABloques(cantAlmacenamiento);
         if (bloquesNecesarios > bloquesDisponibles.size()){
             return false;
@@ -36,13 +36,13 @@ public class ControladorAlmacenamiento {
             }
         }
         bloquesDisponibles.removeAll(bloquesreservados);
-        asignaciones.put(idMV, bloquesreservados);
+        asignaciones.put(id, bloquesreservados);
         return true;
     }
 
     //Exclusion mutua para acceder a las asignaciones y a bloques disponibles
-    public synchronized void liberarDisco(int idMV) {
-        List<Integer> bloquesRemovidos = asignaciones.remove(idMV);
+    public synchronized void liberarDisco(String id) {
+        List<Integer> bloquesRemovidos = asignaciones.remove(id);
         if (bloquesRemovidos != null && !bloquesRemovidos.isEmpty()){
             bloquesDisponibles.addAll(bloquesRemovidos);
             
