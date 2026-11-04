@@ -19,11 +19,11 @@ public class ZonaEspera{
         }
     }
 
-    public void notificarLiberacion() {
+    public synchronized void notificarLiberacion() {
         notifyAll();
     }
     
-    public int getCantMvEnEspera(){
+    public synchronized int getCantMvEnEspera(){
         return cantMvEnEspera;
     }
 
