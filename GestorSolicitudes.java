@@ -43,7 +43,7 @@ public class GestorSolicitudes implements Runnable {
     }
 
     public synchronized void crearMV(Solicitud solicitud){
-        MaquinaVirtual mv = new MaquinaVirtual(idGestor, solicitud.getNumProcesadores(), solicitud.getMemoriaGiB(),
+        MaquinaVirtual mv = new MaquinaVirtual(solicitud.getId(), solicitud.getNumProcesadores(), solicitud.getMemoriaGiB(),
                 solicitud.getAlmacenamientoGiB(), ctrlProc, ctrlMem, ctrlAlm, zonaEspera);
                 
         Thread hiloMV = new Thread(mv); //preguntar si esto esta bien o va en el main
