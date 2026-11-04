@@ -7,7 +7,7 @@ public class Main {
         System.out.println("=== Iniciando Sistema Gestor de Recursos para MVs ===");
 
         Properties config = new Properties();
-        try (FileReader reader = new FileReader("datos.txt")) {
+        try (FileReader reader = new FileReader("C:/Users/User/Documents/GABY/2026-2-SEMESTRE_4/TIC/caso3_mg.herrera_ds.acosta/Caso-3-TIC/datos.txt")) {
             config.load(reader);
         } catch (IOException e) {
             System.err.println("Error al leer el archivo datos.txt: " + e.getMessage());
@@ -46,7 +46,7 @@ public class Main {
         for (int i = 0; i < numUsuarios; i++) {
             int solicitudesAGenerar = baseEventos* i; 
             
-            Usuario usuario = new Usuario(capacidadBuzon, solicitudesAGenerar, buzon, solicitudesAGenerar, capacidadMemoriaGiB, capacidadAlmacenamientoGiB);
+            Usuario usuario = new Usuario(i+1,  solicitudesAGenerar,  buzon,  totalProcesadores,  capacidadMemoriaGiB, capacidadAlmacenamientoGiB);
             new Thread(usuario, "Hilo-Usuario-" + (i + 1)).start();
         }
 
