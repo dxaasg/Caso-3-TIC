@@ -36,13 +36,13 @@ public class Main {
         ZonaEspera zonaEspera = new ZonaEspera(umbralEspera);
         BuzonEntrada buzon = new BuzonEntrada(capacidadBuzon, numUsuarios);
 
-        // 4. Crear y arrancar los hilos de los Gestores de Solicitudes
+        // Crear los hilos de los Gestores de Solicitudes
         for (int i = 0; i < numGestores; i++) {
             GestorSolicitudes gestor = new GestorSolicitudes(i + 1, buzon, ctrlProc, ctrlMem, ctrlAlm, zonaEspera);
             new Thread(gestor, "Hilo-Gestor-" + (i + 1)).start();
         }
 
-        // 5. Crear y arrancar los hilos de los Usuarios
+        // Crear los hilos de los Usuarios
         for (int i = 1; i <= numUsuarios; i++) {
             int solicitudesAGenerar = baseEventos * i;
             Usuario usuario = new Usuario(i, solicitudesAGenerar, buzon,
