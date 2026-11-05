@@ -36,10 +36,10 @@ public class BuzonEntrada {
             return null;
         }
         Solicitud s = colaSolicitudes.remove(0);
-        notifyAll(); // hay un espacio libre: despierta usuarios
+        notifyAll(); 
         return s;
     }
-    
+
     public synchronized void Termine() {
         usuariosActivos--; 
         notifyAll();       
